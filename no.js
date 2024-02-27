@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         No
 // @namespace    http://tampermonkey.net/
-// @version      1
+// @version      2
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        GM_xmlhttpRequest
-// @updateURL    https://raw.githubusercontent.com/NFLD99/StylesAndScripts/main/vrcBTN.js
-// @downloadURL  https://raw.githubusercontent.com/NFLD99/StylesAndScripts/main/vrcBTN.js
+// @updateURL    https://raw.githubusercontent.com/NFLD99/no/main/no.js
+// @downloadURL  https://raw.githubusercontent.com/NFLD99/no/main/no.js
 // ==/UserScript==
 
 (function() {
@@ -54,4 +54,17 @@
 
     // Call the function to check the blacklist
     checkBlacklist();
+
+    // Function to run script on page changes
+    function checkAndRunScript() {
+        checkBlacklist();
+    }
+
+    // Listen for DOM changes
+    document.addEventListener("DOMContentLoaded", checkAndRunScript);
+    window.addEventListener("load", checkAndRunScript);
+    window.addEventListener("popstate", checkAndRunScript);
+
+    // Listen for URL changes
+    window.addEventListener("hashchange", checkAndRunScript);
 })();
