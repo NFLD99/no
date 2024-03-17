@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         No
 // @namespace    http://tampermonkey.net/
-// @version      2
+// @version      3
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.youtube.com/*
