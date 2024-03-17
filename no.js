@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         No
 // @namespace    http://tampermonkey.net/
-// @version      3
+// @version      4
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.youtube.com/*
@@ -51,27 +51,20 @@
         });
     }
 
-    // Function to run script on audio play
+    // Function to run script on DOM change
     function checkAndRunScript() {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const gainNode = audioContext.createGain();
-        const oscillator = audioContext.createOscillator();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        oscillator.start(0);
-
-        // Check if audio is being played
-        setTimeout(() => {
-            if (audioContext.state === 'running') {
-                checkBlacklist();
-            }
-            audioContext.close();
-        }, 1000); // Adjust this timeout if needed
+        checkBlacklist();
     }
 
-    // Call the function to check and run script
-    checkAndRunScript();
+    // Observe DOM changes
+    const observer = new MutationObserver(checkAndRunScript);
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        characterData: true
+    });
 
-    // Listen for URL changes
-    window.addEventListener("hashchange", checkAndRunScript);
+    // Call the function initially to check the blacklist
+    checkAndRunScript();
 })();
