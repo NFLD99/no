@@ -35,7 +35,6 @@
                 if (response.status === 200) {
                     try {
                         const blacklist = JSON.parse(response.responseText);
-                        console.log(blacklist)
                         if (isInBlacklist(videoId, blacklist)) {
                             window.location.href = 'https://www.youtube.com/';
                         }
@@ -52,18 +51,26 @@
         });
     }
 
-    // Call the function to check the blacklist
-    checkBlacklist();
-
-    // Function to run script on page changes
+    // Function to run script on audio play
     function checkAndRunScript() {
-        checkBlacklist();
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const gainNode = audioContext.createGain();
+        const oscillator = audioContext.createOscillator();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.start(0);
+
+        // Check if audio is being played
+        setTimeout(() => {
+            if (audioContext.state === 'running') {
+                checkBlacklist();
+            }
+            audioContext.close();
+        }, 1000); // Adjust this timeout if needed
     }
 
-    // Listen for DOM changes
-    document.addEventListener("DOMContentLoaded", checkAndRunScript);
-    window.addEventListener("load", checkAndRunScript);
-    window.addEventListener("popstate", checkAndRunScript);
+    // Call the function to check and run script
+    checkAndRunScript();
 
     // Listen for URL changes
     window.addEventListener("hashchange", checkAndRunScript);
